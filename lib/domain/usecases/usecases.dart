@@ -1,1 +1,1 @@
-import './authentication.dart';
+export './authentication.dart';
