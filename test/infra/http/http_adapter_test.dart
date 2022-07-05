@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:faker/faker.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart';
@@ -18,7 +20,9 @@ class HttpAdapter {
       'content-type': 'application/json',
       'accept': 'application/json',
     };
-    await client.post(url, headers: headers);
+    final jsonBody = body != null ? jsonEncode(body) : null;
+
+    await client.post(url, headers: headers, body: jsonBody);
   }
 }
 
@@ -32,20 +36,29 @@ void main() {
   setUp(() {
     client = ClientSpy();
     sut = HttpAdapter(client);
-    url = faker.internet.httpUrl(); 
+    url = faker.internet.httpUrl();
   });
   group('post', () {
     test('Should call post with correct values', () async {
-     
+      await sut
+          .request(url: url, method: 'post', body: {'any_key': 'any_value'});
 
+      verify(client.post(
+          url,
+          headers: {
+            'content-type': 'application/json',
+            'accept': 'application/json',
+          },
+          body: '{"any_key":"any_value"}'
+      ));
+    });
+
+    test('Should call post with body', () async {
       await sut.request(url: url, method: 'post');
 
       verify(client.post(
-        url,
-        headers: {
-          'content-type': 'application/json',
-          'accept': 'application/json',
-        },
+          any,
+          headers: anyNamed('headers'),
       ));
     });
   });
