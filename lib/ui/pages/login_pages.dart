@@ -20,23 +20,24 @@ class LoginPage extends StatelessWidget {
                 TextFormField(
                   decoration: InputDecoration(
                     labelText: 'Email',
-                    icon: Icon(Icons.email,color: Theme.of(context).primaryColorLight,)
+                    icon: Icon(Icons.email,color: Theme.of(context).primaryColorLight,),
+                    //errorText: ''
                   ),
                   keyboardType: TextInputType.emailAddress,
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 8, bottom: 30),
-                  child: TextFormField(
+                  child: TextFormField( 
                     decoration: InputDecoration(
                       
                       labelText: 'Senha',
                       icon: Icon(Icons.lock, color:Theme.of(context).primaryColorLight)
                     ),
-                    obscureText: true,
+                    obscureText: true, 
                   ),
                 ),
                 RaisedButton(
-                  onPressed: () {},
+                  onPressed: null,
                   child: Text('Entrar'.toUpperCase()),
                 ),
                 FlatButton.icon(
