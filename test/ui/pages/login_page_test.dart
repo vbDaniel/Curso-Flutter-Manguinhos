@@ -14,16 +14,25 @@ void main() {
   LoginPresenter presenter;
   StreamController<String> emailErrorController;
   StreamController<String> passwordErrorController;
+  StreamController<bool> ifFormValidErrorController;
+  StreamController<bool> ifLoadingController;
 
   Future<void> loadPage(WidgetTester tester) async {
     presenter = LoginPresenterSpy();
 
     emailErrorController = StreamController<String>();
     passwordErrorController = StreamController<String>();
+    ifFormValidErrorController = StreamController<bool>();
+    ifLoadingController = StreamController<bool>();
+
     when(presenter.emailErrorStream)
         .thenAnswer((_) => emailErrorController.stream);
     when(presenter.passwordErrorStream)
         .thenAnswer((_) => passwordErrorController.stream);
+    when(presenter.ifFormValidStream)
+        .thenAnswer((_) => ifFormValidErrorController.stream);
+    when(presenter.ifLoadingStream)
+        .thenAnswer((_) => ifLoadingController.stream);
 
     final loginPage = MaterialApp(home: LoginPage(presenter));
     await tester.pumpWidget(loginPage);
@@ -32,6 +41,8 @@ void main() {
   tearDown(() {
     emailErrorController.close();
     passwordErrorController.close();
+    ifFormValidErrorController.close();
+    ifLoadingController.close();
   });
   testWidgets('Should load with correct initial state',
       (WidgetTester tester) async {
@@ -51,6 +62,8 @@ void main() {
 
     final button = tester.widget<RaisedButton>(find.byType(RaisedButton));
     expect(button.onPressed, null);
+
+    expect(find.byType(CircularProgressIndicator), findsNothing);
   });
 
   testWidgets('Shoul call validate with correct values',
@@ -113,7 +126,6 @@ void main() {
     expect(find.text('any error'), findsOneWidget);
   });
 
-
   testWidgets('Shoul present no error id password is invalid',
       (WidgetTester tester) async {
     await loadPage(tester);
@@ -141,4 +153,66 @@ void main() {
     );
   });
 
+  testWidgets('Shoul enable form button is form valid',
+      (WidgetTester tester) async {
+    await loadPage(tester);
+
+    ifFormValidErrorController.add(true);
+    await tester.pump(); //força uma renderizacao nos componetes necessarios
+
+    expect(tester.widget<RaisedButton>(find.byType(RaisedButton)).onPressed,
+        isNotNull);
+  });
+
+  testWidgets('Shoul enable form button is form valid',
+      (WidgetTester tester) async {
+    await loadPage(tester);
+
+    ifFormValidErrorController.add(false);
+    await tester.pump(); //força uma renderizacao nos componetes necessarios
+
+    expect(
+        tester.widget<RaisedButton>(find.byType(RaisedButton)).onPressed, null);
+  });
+
+  testWidgets('Shoul call authentication on form submit ',
+      (WidgetTester tester) async {
+    await loadPage(tester);
+
+    ifFormValidErrorController.add(true);
+
+    await tester.pump(); //força uma renderizacao nos componetes necessarios
+    await tester.tap(find.byType(RaisedButton));
+    await tester.pump();
+
+    verifyNever(presenter.auth()); //possivel nova formataçao verificar dps
+  });
+
+  testWidgets('Shoul present loading', (WidgetTester tester) async {
+    await loadPage(tester);
+
+    ifLoadingController.add(true);
+    await tester.pump(); //força uma renderizacao nos componetes necessarios
+
+    expect(
+      find.byType(CircularProgressIndicator),
+      findsOneWidget,
+    );
+  });
+
+
+  testWidgets('Shoul hide loading', (WidgetTester tester) async {
+    await loadPage(tester);
+
+    ifLoadingController.add(true);
+    await tester.pump();
+    ifLoadingController.add(false);
+    await tester.pump(); //força uma renderizacao nos componetes necessarios
+
+    expect(
+      find.byType(CircularProgressIndicator),
+      findsNothing,
+    );
+  });
 }
+
