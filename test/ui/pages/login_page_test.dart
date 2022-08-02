@@ -14,6 +14,7 @@ void main() {
   LoginPresenter presenter;
   StreamController<String> emailErrorController;
   StreamController<String> passwordErrorController;
+  StreamController<String> mainErrorController;
   StreamController<bool> ifFormValidErrorController;
   StreamController<bool> ifLoadingController;
 
@@ -22,6 +23,7 @@ void main() {
 
     emailErrorController = StreamController<String>();
     passwordErrorController = StreamController<String>();
+    mainErrorController = StreamController<String>();
     ifFormValidErrorController = StreamController<bool>();
     ifLoadingController = StreamController<bool>();
 
@@ -29,6 +31,8 @@ void main() {
         .thenAnswer((_) => emailErrorController.stream);
     when(presenter.passwordErrorStream)
         .thenAnswer((_) => passwordErrorController.stream);
+    when(presenter.mainErrorStream)
+        .thenAnswer((_) => mainErrorController.stream);
     when(presenter.ifFormValidStream)
         .thenAnswer((_) => ifFormValidErrorController.stream);
     when(presenter.ifLoadingStream)
@@ -41,6 +45,7 @@ void main() {
   tearDown(() {
     emailErrorController.close();
     passwordErrorController.close();
+    mainErrorController.close();
     ifFormValidErrorController.close();
     ifLoadingController.close();
   });
@@ -66,7 +71,7 @@ void main() {
     expect(find.byType(CircularProgressIndicator), findsNothing);
   });
 
-  testWidgets('Shoul call validate with correct values',
+  testWidgets('Should call validate with correct values',
       (WidgetTester tester) async {
     await loadPage(tester); //carrega a tela
 
@@ -79,7 +84,7 @@ void main() {
     verify(presenter.validatePassword(password));
   });
 
-  testWidgets('Shoul present error id email is invalid',
+  testWidgets('Should present error id email is invalid',
       (WidgetTester tester) async {
     await loadPage(tester);
 
@@ -89,7 +94,7 @@ void main() {
     expect(find.text('any error'), findsOneWidget);
   });
 
-  testWidgets('Shoul present no error id email is invalid',
+  testWidgets('Should present no error id email is invalid',
       (WidgetTester tester) async {
     await loadPage(tester);
 
@@ -102,7 +107,7 @@ void main() {
       findsOneWidget,
     );
   });
-  testWidgets('Shoul present no error id email is invalid',
+  testWidgets('Should present no error id email is invalid',
       (WidgetTester tester) async {
     await loadPage(tester);
 
@@ -116,7 +121,7 @@ void main() {
     );
   });
 
-  testWidgets('Shoul present no error id password is invalid',
+  testWidgets('Should present no error id password is invalid',
       (WidgetTester tester) async {
     await loadPage(tester);
 
@@ -126,7 +131,7 @@ void main() {
     expect(find.text('any error'), findsOneWidget);
   });
 
-  testWidgets('Shoul present no error id password is invalid',
+  testWidgets('Should present no error id password is invalid',
       (WidgetTester tester) async {
     await loadPage(tester);
 
@@ -139,7 +144,7 @@ void main() {
       findsOneWidget,
     );
   });
-  testWidgets('Shoul present no error id password is invalid',
+  testWidgets('Should present no error id password is invalid',
       (WidgetTester tester) async {
     await loadPage(tester);
 
@@ -153,7 +158,7 @@ void main() {
     );
   });
 
-  testWidgets('Shoul enable form button is form valid',
+  testWidgets('Should enable form button is form valid',
       (WidgetTester tester) async {
     await loadPage(tester);
 
@@ -164,7 +169,7 @@ void main() {
         isNotNull);
   });
 
-  testWidgets('Shoul enable form button is form valid',
+  testWidgets('Should enable form button is form valid',
       (WidgetTester tester) async {
     await loadPage(tester);
 
@@ -175,7 +180,7 @@ void main() {
         tester.widget<RaisedButton>(find.byType(RaisedButton)).onPressed, null);
   });
 
-  testWidgets('Shoul call authentication on form submit ',
+  testWidgets('Should call authentication on form submit ',
       (WidgetTester tester) async {
     await loadPage(tester);
 
@@ -188,7 +193,7 @@ void main() {
     verifyNever(presenter.auth()); //possivel nova formataçao verificar dps
   });
 
-  testWidgets('Shoul present loading', (WidgetTester tester) async {
+  testWidgets('Should present loading', (WidgetTester tester) async {
     await loadPage(tester);
 
     ifLoadingController.add(true);
@@ -200,8 +205,7 @@ void main() {
     );
   });
 
-
-  testWidgets('Shoul hide loading', (WidgetTester tester) async {
+  testWidgets('Should hide loading', (WidgetTester tester) async {
     await loadPage(tester);
 
     ifLoadingController.add(true);
@@ -214,5 +218,17 @@ void main() {
       findsNothing,
     );
   });
-}
 
+  testWidgets('Should present error message if Auth fails ',
+      (WidgetTester tester) async {
+    await loadPage(tester);
+
+    mainErrorController.add('main error');
+    await tester.pump();
+
+    expect(
+      find.text('main error'),
+      findsOneWidget,
+    );
+  });
+}
