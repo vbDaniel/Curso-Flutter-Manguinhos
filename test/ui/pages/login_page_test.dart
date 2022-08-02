@@ -75,6 +75,20 @@ void main() {
 
     expect(find.text('any error'), findsOneWidget);
   });
+
+  testWidgets('Shoul present no error id email is invalid',
+      (WidgetTester tester) async {
+    await loadPage(tester);
+
+    emailErrorController.add(null);
+    await tester.pump(); //força uma renderizacao nos componetes necessarios
+
+    expect(
+      find.descendant(
+          of: find.bySemanticsLabel('Email'), matching: find.byType(Text)),
+      findsOneWidget,
+    );
+  });
   testWidgets('Shoul present no error id email is invalid',
       (WidgetTester tester) async {
     await loadPage(tester);
@@ -98,4 +112,33 @@ void main() {
 
     expect(find.text('any error'), findsOneWidget);
   });
+
+
+  testWidgets('Shoul present no error id password is invalid',
+      (WidgetTester tester) async {
+    await loadPage(tester);
+
+    passwordErrorController.add(null);
+    await tester.pump(); //força uma renderizacao nos componetes necessarios
+
+    expect(
+      find.descendant(
+          of: find.bySemanticsLabel('Senha'), matching: find.byType(Text)),
+      findsOneWidget,
+    );
+  });
+  testWidgets('Shoul present no error id password is invalid',
+      (WidgetTester tester) async {
+    await loadPage(tester);
+
+    passwordErrorController.add('');
+    await tester.pump(); //força uma renderizacao nos componetes necessarios
+
+    expect(
+      find.descendant(
+          of: find.bySemanticsLabel('Senha'), matching: find.byType(Text)),
+      findsOneWidget,
+    );
+  });
+
 }
