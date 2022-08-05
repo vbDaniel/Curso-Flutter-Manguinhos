@@ -6,32 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 
-abstract class Validation {
-  String validate({@required String field, @required String value});
-}
-
-class LoginState {
-  String emailError;
-}
-
-class StreamLoginPresenter {
-  final Validation validation;
-  final _controller = StreamController<LoginState>.broadcast();
-
-  var _state = LoginState();
-
-  Stream<String> get emailErrorStream =>
-      _controller.stream.map((state) => state.emailError);
-
-  StreamLoginPresenter({
-    @required this.validation,
-  });
-
-  void validateEmail(String email) {
-    _state.emailError = validation.validate(field: 'email', value: email);
-    _controller.add(_state);
-  }
-}
+import 'package:treinamento_flutter/presentation/presenters/presenters.dart';
+import 'package:treinamento_flutter/presentation/protocols/protocols.dart';
 
 class ValidationSpy extends Mock implements Validation {}
 
@@ -40,8 +16,9 @@ void main() {
   ValidationSpy validation;
   String email;
 
-  PostExpectation mockValidationCall(String field) => 
-  when(validation.validate(field: field == null ? anyNamed('field') : field,value: anyNamed('value')));
+  PostExpectation mockValidationCall(String field) => when(validation.validate(
+      field: field == null ? anyNamed('field') : field,
+      value: anyNamed('value')));
 
   void mockValidation({String field, String value}) {
     mockValidationCall(field).thenReturn(value);
@@ -63,8 +40,11 @@ void main() {
   test('Should emit email error if validation fails', () {
     mockValidation(value: 'error');
 
-    expectLater(sut.emailErrorStream, emits('error'));
+    sut.emailErrorStream.listen(expectAsync1((error) => expect(error, 'error')));
 
+    //expectLater(sut.emailErrorStream, emitsInOrder(['error']));
+
+    sut.validateEmail(email);
     sut.validateEmail(email);
   });
 }
