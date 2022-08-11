@@ -31,7 +31,7 @@ void main() {
 
   void mockAuthentication() {
     mockAuthenticationCall()
-        .thenAnswer((_) => AccountEntity(faker.guid.guid()));
+        .thenAnswer((_) async => AccountEntity(faker.guid.guid()));
   }
 
   setUp(() {
@@ -133,7 +133,7 @@ void main() {
     await sut.auth();
 
     verify(authentication
-            .auth(AuthenticationParams(email: email, password: password)))
+            .auth(AuthenticationParams(email: email, secret: password)))
         .called(1);
   });
   test('Should emit correct event on Authtentication success', () async {
@@ -146,4 +146,8 @@ void main() {
     await sut.auth();
 
   });
+
+  
+
+
 }

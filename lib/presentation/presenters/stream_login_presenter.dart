@@ -60,7 +60,7 @@ class StreamLoginPresenter {
   Future<void> auth() async {
     _state.isLoading = true;
     _update();
-    await authentication.auth(AuthenticationParams(email: _state.email, password: _state.password));
+    await authentication.auth(AuthenticationParams(email: _state.email, secret: _state.password));
     _state.isLoading = false;
     _update();
   }
