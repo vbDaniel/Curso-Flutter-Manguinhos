@@ -1,21 +1,9 @@
-import 'dart:math';
-
 import 'package:flutter_test/flutter_test.dart';
 
-abstract class FieldValidation {
-  String get field;
-  String validate(String value);
-}
+import 'package:treinamento_flutter/validation/validators/validators.dart';
 
-class RequiredFieldValidation {
-  final String field;
 
-  RequiredFieldValidation(this.field);
 
-  String validate(String value) {
-    return value?.isNotEmpty == true ? null : 'Campo obrigatório';
-  }
-}
 
 void main() {
   RequiredFieldValidation sut;
