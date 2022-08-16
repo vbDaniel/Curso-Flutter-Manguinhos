@@ -3,6 +3,7 @@ import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
 
 import 'package:treinamento_flutter/domain/entities/account_entity.dart';
+import 'package:treinamento_flutter/domain/helpers/helpers.dart';
 import 'package:treinamento_flutter/domain/usecases/usecases.dart';
 
 import 'package:treinamento_flutter/presentation/presenters/presenters.dart';
@@ -32,6 +33,10 @@ void main() {
   void mockAuthentication() {
     mockAuthenticationCall()
         .thenAnswer((_) async => AccountEntity(faker.guid.guid()));
+  }
+
+  void mockAuthenticationError(DomainError error) {
+    mockAuthenticationCall().thenThrow(error);
   }
 
   setUp(() {
@@ -140,14 +145,29 @@ void main() {
     sut.validateEmail(email);
     sut.validatePassword(password);
 
-
-    expectLater(sut.isLoadingStream , emitsInOrder([true, false]));
+    expectLater(sut.isLoadingStream, emitsInOrder([true, false]));
 
     await sut.auth();
-
   });
 
-  
+  test('Should emit correct event on InvalidCredentialError', () async {
+    mockAuthenticationError(DomainError.invalidCredentials);
 
+    sut.validateEmail(email);
+    sut.validatePassword(password);
 
+    expectLater(sut.isLoadingStream, emits(false));
+
+    sut.mainErrorStream.listen(
+        expectAsync1((error) => expect(error, 'Credenciais inválidas')));
+
+    await sut.auth();
+  });
+
+  test('Should not emit after dispose', () async {
+    expectLater(sut.emailErrorStream, neverEmits(null));
+
+    sut.dispose();
+    sut.validateEmail(email);
+  });
 }
