@@ -1,26 +1,27 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:treinamento_flutter/validation/protocols/field_validation.dart';
 
-class EmailValidation implements FieldValidation {
-  final String field;
+import 'package:treinamento_flutter/validation/validators/validators.dart';
 
-  EmailValidation(this.field);
 
-  String validate(String value) {
-    return null;
-  }
-}
 
 void main() {
+  EmailValidation sut;
+  setUp(() {
+    sut = EmailValidation('any_field');
+  });
   test('Should return null if email is empty', () {
-    final sut = EmailValidation('any_field');
-
     expect(sut.validate(''), null);
   });
 
-   test('Should return null if email is null', () {
-    final sut = EmailValidation('any_field');
-
+  test('Should return null if email is null', () {
     expect(sut.validate(null), null);
+  });
+
+  test('Should return null if email is valid', () {
+    expect(sut.validate('danielvidalbicalho15@gmail.com'), null);
+  });
+
+  test('Should return error if email is invalid', () {
+    expect(sut.validate('danielvidalbicalho15'), 'Campo inválido');
   });
 }
