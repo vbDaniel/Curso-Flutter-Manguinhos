@@ -1,10 +1,12 @@
-import 'package:treinamento_flutter/data/http/http.dart';
-import 'package:treinamento_flutter/domain/entities/account_entity.dart';
+import '../../domain/entities/entities.dart';
+
+import '../http/http.dart';
 
 class RemoteAccountModel {
   final String accessToken;
 
   RemoteAccountModel(this.accessToken);
+
   factory RemoteAccountModel.fromJson(Map json) {
     if (!json.containsKey('accessToken')) {
       throw HttpError.invalidData;
