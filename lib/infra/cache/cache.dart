@@ -1,0 +1,1 @@
+export 'cacheLocal_Storage_adapter.dart';
