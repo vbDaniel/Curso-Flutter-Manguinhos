@@ -1,5 +1,5 @@
 import 'package:ForDev/domain/entities/entities.dart';
 
-abstract class loadCurrentAccount {
+abstract class LoadCurrentAccount {
   Future<AccountEntity> load();
 }
