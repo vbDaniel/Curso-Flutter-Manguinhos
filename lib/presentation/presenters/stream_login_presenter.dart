@@ -1,3 +1,5 @@
+
+/*
 import 'dart:async';
 
 import 'package:meta/meta.dart';
@@ -25,6 +27,7 @@ class LoginState {
       password != null;
 }
 
+
 class StreamLoginPresenter implements LoginPresenter {
   final Validation validation;
   final Authentication authentication;
@@ -50,11 +53,13 @@ class StreamLoginPresenter implements LoginPresenter {
 
   void _update() => _controller?.add(_state);
 
-  void validateEmail(String email) {
-    _state.email = email;
-    _state.emailError = validation.validate(field: 'email', value: email);
-    _update();
-  }
+  // void validateEmail(String email) {
+  //   _state.email = email;
+  //   _state.emailError = validation.validate(field: 'email', value: email);
+  //   _update();
+  // }
+
+  
 
   void validatePassword(String password) {
     _state.password = password;
@@ -62,6 +67,7 @@ class StreamLoginPresenter implements LoginPresenter {
         validation.validate(field: 'password', value: password);
     _update();
   }
+
 
   Future<void> auth() async {
     _state.isLoading = true;
@@ -80,4 +86,5 @@ class StreamLoginPresenter implements LoginPresenter {
     _controller?.close();
     _controller = null;
   }
-}
+} 
+*/
