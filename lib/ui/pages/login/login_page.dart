@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
-import '../../../ui/helpers/ui_error.dart';
-import '../../../utils/i18n/resources.dart';
+import '../../helpers/helpers.dart';
 import '../../components/components.dart';
 import 'components/components.dart';
 import 'login_presenter.dart';
