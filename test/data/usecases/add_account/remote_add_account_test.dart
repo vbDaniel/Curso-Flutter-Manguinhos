@@ -1,10 +1,10 @@
-import 'package:ForDev/domain/usecases/add_Account.dart';
 import 'package:faker/faker.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
 
-import 'package:ForDev/domain/usecases/usecases.dart';
 
+import 'package:ForDev/domain/helpers/helpers.dart';
+import 'package:ForDev/domain/usecases/add_account.dart';
 import 'package:ForDev/data/http/http.dart';
 import 'package:ForDev/data/usecases/usecases.dart';
 
@@ -17,6 +17,19 @@ void main() {
   AddAccountParams params;
 
 
+  PostExpectation mockRequest() =>
+    when(httpClient.request(
+      url: anyNamed('url'), 
+      method: anyNamed('method'), 
+      body: anyNamed('body')
+    ));
+
+
+  void mockHttpError(HttpError error) {
+    mockRequest().thenThrow(error);
+  }
+
+
   setUp(() {
     httpClient = HttpClientSpy();
     url = faker.internet.httpUrl();
@@ -27,11 +40,11 @@ void main() {
         password: faker.internet.password(),
         passwordConfirmation: faker.internet.password(),
       );
-    
   });
 
+
   test('Should call HttpClient with correct values', () async {
-    
+
     await sut.add(params);
 
     verify(httpClient.request(
@@ -44,4 +57,39 @@ void main() {
           'passwordConfirmation': params.passwordConfirmation
         }));
   });
+
+    test('Should throw UnexpectedError if HttpClient returns 400', () async {
+    mockHttpError(HttpError.badRequest);
+
+    final future = sut.add(params);
+
+    expect(future, throwsA(DomainError.unexpected));
+  });
+
+
+  test('Should throw UnexpectedError if HttpClient returns 404', () async {
+    mockHttpError(HttpError.notFound);
+
+    final future = sut.add(params);
+
+    expect(future, throwsA(DomainError.unexpected));
+  });
+
+
+  test('Should throw UnexpectedError if HttpClient returns 500', () async {
+    mockHttpError(HttpError.serverError);
+
+    final future = sut.add(params);
+
+    expect(future, throwsA(DomainError.unexpected));
+  });
+
+   test('Should throw InvalidCredentialsError if HttpClient returns 403', () async {
+    mockHttpError(HttpError.forbidden);
+
+    final future = sut.add(params);
+
+    expect(future, throwsA(DomainError.emailInUse));
+  });
+
 }

@@ -1,21 +1,24 @@
-import 'package:ForDev/domain/usecases/add_Account.dart';
 import 'package:meta/meta.dart';
 
+import '../../../domain/helpers/helpers.dart';
+import '../../../domain/usecases/usecases.dart';
 import '../../http/http.dart';
 
-
-class RemoteAddAccount{
+class RemoteAddAccount {
   final HttpClient httpClient;
   final String url;
 
-  RemoteAddAccount({
-    @required this.httpClient,
-    @required this.url
-  });
+  RemoteAddAccount({@required this.httpClient, @required this.url});
 
   Future<void> add(AddAccountParams params) async {
     final body = RemoteAddAccountParams.fromDomain(params).toJson();
-    await await httpClient.request(url: url, method: 'post', body: body);
+    try {
+      await await httpClient.request(url: url, method: 'post', body: body);
+    } on HttpError catch(error) {
+      throw error == HttpError.forbidden
+        ? DomainError.emailInUse
+        : DomainError.unexpected;
+    }
   }
 }
 
@@ -32,17 +35,17 @@ class RemoteAddAccountParams {
     @required this.passwordConfimation,
   });
 
-  factory RemoteAddAccountParams.fromDomain(AddAccountParams params) => 
-    RemoteAddAccountParams(
-      name: params.name,
-      email: params.email,
-      password: params.password, 
-      passwordConfimation: params.passwordConfirmation);
+  factory RemoteAddAccountParams.fromDomain(AddAccountParams params) =>
+      RemoteAddAccountParams(
+          name: params.name,
+          email: params.email,
+          password: params.password,
+          passwordConfimation: params.passwordConfirmation);
 
   Map toJson() => {
-    'name': name,
-    'email': email, 
-    'password': password, 
-    'passwordConfirmation': passwordConfimation
-  };
+        'name': name,
+        'email': email,
+        'password': password,
+        'passwordConfirmation': passwordConfimation
+      };
 }
