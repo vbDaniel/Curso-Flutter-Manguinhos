@@ -8,14 +8,19 @@ class PasswordConfirmationInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final presenter = Provider.of<SignUpPresenter>(context);
-    return  TextFormField(
+    return StreamBuilder<UiError>(
+      stream: presenter.passwordConfirmationErrorStream,
+      builder: (context, snapshot) {
+        return   TextFormField(
           decoration: InputDecoration(
             labelText: R.strings.confirmPassword,
             icon: Icon(Icons.lock, color: Theme.of(context).primaryColorLight),
             errorText: null,
           ),
           obscureText: true,
-          onChanged: presenter.validatePassword,
-      );
+          onChanged: presenter.validatePasswordConfirmation,
+        );
+      },
+    ); 
   }
 }

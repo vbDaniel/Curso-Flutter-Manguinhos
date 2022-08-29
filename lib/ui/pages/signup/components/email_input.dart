@@ -8,7 +8,10 @@ class EmailInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final presenter = Provider.of<SignUpPresenter>(context);
-    return TextFormField(
+    return StreamBuilder<UiError>(
+      stream: presenter.emailErrorStream,
+      builder: (context, snapshot) {
+        return  TextFormField(
           decoration: InputDecoration(
             labelText: R.strings.email,
             icon: Icon(Icons.email, color: Theme.of(context).primaryColorLight),
@@ -16,6 +19,8 @@ class EmailInput extends StatelessWidget {
           ),
           keyboardType: TextInputType.emailAddress,
           onChanged: presenter.validateEmail,
-      );
+        );
+      },
+    );
   }
 }

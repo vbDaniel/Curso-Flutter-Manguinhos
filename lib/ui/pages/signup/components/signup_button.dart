@@ -7,10 +7,10 @@ import '../signup_presenter.dart';
 class SignUpButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final presenter = Provider.of<SignUpPresenter>(context);
     return RaisedButton(
           onPressed: null,
           child: Text(R.strings.addAccount.toUpperCase()),
       );
+   
   }
 }
