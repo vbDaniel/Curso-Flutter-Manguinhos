@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:ForDev/ui/helpers/errors/ui_error.dart';
+import 'package:ForDev/ui/helpers/helpers.dart';
 import 'package:faker/faker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -80,13 +81,13 @@ void main() {
     await loadPage(tester);
 
     final emailTextChildren = find.descendant(
-        of: find.bySemanticsLabel('Email'), matching: find.byType(Text));
+        of: find.bySemanticsLabel(R.strings.email), matching: find.byType(Text));
     expect(emailTextChildren, findsOneWidget,
         reason:
             'when a TextFormField has only one text child, means it has no errors, since one of the childs is always the label text');
 
     final passwordTextChildren = find.descendant(
-        of: find.bySemanticsLabel('Senha'), matching: find.byType(Text));
+        of: find.bySemanticsLabel(R.strings.password), matching: find.byType(Text));
     expect(passwordTextChildren, findsOneWidget,
         reason:
             'when a TextFormField has only one text child, means it has no errors, since one of the childs is always the label text');
@@ -101,11 +102,11 @@ void main() {
     await loadPage(tester);
 
     final email = faker.internet.email();
-    await tester.enterText(find.bySemanticsLabel('Email'), email);
+    await tester.enterText(find.bySemanticsLabel(R.strings.email), email);
     verify(presenter.validateEmail(email));
 
     final password = faker.internet.password();
-    await tester.enterText(find.bySemanticsLabel('Senha'), password);
+    await tester.enterText(find.bySemanticsLabel(R.strings.password), password);
     verify(presenter.validatePassword(password));
   });
 
@@ -116,7 +117,7 @@ void main() {
     emailErrorController.add(UiError.invalidField);
     await tester.pump();
 
-    expect(find.text('Campo inválido.'), findsOneWidget);
+    expect(find.text(R.strings.msgInvalidField), findsOneWidget);
   });
 
   testWidgets('Should present error if email is empty',
@@ -126,7 +127,7 @@ void main() {
     emailErrorController.add(UiError.requiredField);
     await tester.pump();
 
-    expect(find.text('Campo obrigatório'), findsOneWidget);
+    expect(find.text(R.strings.msgRequiredField), findsOneWidget);
   });
 
 
@@ -140,7 +141,7 @@ void main() {
 
     expect(
         find.descendant(
-            of: find.bySemanticsLabel('Email'), matching: find.byType(Text)),
+            of: find.bySemanticsLabel(R.strings.email), matching: find.byType(Text)),
         findsOneWidget);
   });
 
@@ -165,7 +166,7 @@ void main() {
     passwordErrorController.add(UiError.requiredField);
     await tester.pump();
 
-    expect(find.text('Campo obrigatório'), findsOneWidget);
+    expect(find.text(R.strings.msgRequiredField), findsOneWidget);
   });
 
   testWidgets('Should present no error if password is valid',
@@ -177,7 +178,7 @@ void main() {
 
     expect(
         find.descendant(
-            of: find.bySemanticsLabel('Senha'), matching: find.byType(Text)),
+            of: find.bySemanticsLabel(R.strings.password), matching: find.byType(Text)),
         findsOneWidget);
   });
 
@@ -256,7 +257,7 @@ void main() {
     mainErrorController.add(UiError.invalidCredentials);
     await tester.pump();
 
-    expect(find.text('Credenciais inválidas'), findsOneWidget);
+    expect(find.text(R.strings.msgInvalidCredential), findsOneWidget);
   });
 
    testWidgets('Should present error message if authentication throws',
@@ -266,7 +267,7 @@ void main() {
     mainErrorController.add(UiError.unexpected);
     await tester.pump();
 
-    expect(find.text('Algo errado aconteceu. Tente novamente em breve.'), findsOneWidget);
+    expect(find.text(R.strings.msgUnexpecteddError), findsOneWidget);
   });
   testWidgets('Should change page', (WidgetTester tester) async {
     await loadPage(tester);

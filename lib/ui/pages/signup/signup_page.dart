@@ -5,12 +5,12 @@ import 'package:provider/provider.dart';
 import '../../helpers/helpers.dart';
 import '../../components/components.dart';
 import 'components/components.dart';
-import 'login_presenter.dart';
+import 'signup_presenter.dart';
 
-class LoginPage extends StatelessWidget {
-  final LoginPresenter presenter;
+class SignUpPage extends StatelessWidget {
+  final SignUpPresenter presenter;
 
-  LoginPage(this.presenter);
+  SignUpPage(this.presenter);
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +50,7 @@ class LoginPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
                   LoginHeader(),
-                  Headline1(text: R.strings.login ),
+                  Headline1(text: R.strings.addAccount),
                   Padding(
                     padding: EdgeInsets.all(32),
                     child: Provider(
@@ -58,16 +58,21 @@ class LoginPage extends StatelessWidget {
                       child: Form(
                         child: Column(
                           children: <Widget>[
-                            EmailInput(),
+                            NameInput(),
+                            Padding(
+                              padding: EdgeInsets.symmetric(vertical: 8),
+                              child: EmailInput(),
+                            ),
+                            PasswordInput(),
                             Padding(
                               padding: EdgeInsets.only(top: 8, bottom: 32),
-                              child: PasswordInput(),
+                              child: PasswordConfirmationInput(),
                             ),
-                            LoginButton(),
+                            SignUpButton(),
                             FlatButton.icon(
                                 onPressed: () {},
-                                icon: Icon(Icons.person),
-                                label: Text(R.strings.addAccount))
+                                icon: Icon(Icons.exit_to_app),
+                                label: Text(R.strings.login))
                           ],
                         ),
                       ),
