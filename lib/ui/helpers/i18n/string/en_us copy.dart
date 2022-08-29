@@ -7,6 +7,7 @@ class EnUs implements Translations {
   String get msgRequiredField => 'Required field!';
   String get msgInvalidCredential => 'Invalid credentials';
   String get msgUnexpecteddError => 'Something went wrong. Please try again soon.';
+  String get msgEmailInUse => 'Email in use!';
 
   String get addAccount => 'Add Account';
   String get password => 'Password';
