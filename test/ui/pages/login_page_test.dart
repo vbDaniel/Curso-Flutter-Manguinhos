@@ -81,13 +81,15 @@ void main() {
     await loadPage(tester);
 
     final emailTextChildren = find.descendant(
-        of: find.bySemanticsLabel(R.strings.email), matching: find.byType(Text));
+        of: find.bySemanticsLabel(R.strings.email),
+        matching: find.byType(Text));
     expect(emailTextChildren, findsOneWidget,
         reason:
             'when a TextFormField has only one text child, means it has no errors, since one of the childs is always the label text');
 
     final passwordTextChildren = find.descendant(
-        of: find.bySemanticsLabel(R.strings.password), matching: find.byType(Text));
+        of: find.bySemanticsLabel(R.strings.password),
+        matching: find.byType(Text));
     expect(passwordTextChildren, findsOneWidget,
         reason:
             'when a TextFormField has only one text child, means it has no errors, since one of the childs is always the label text');
@@ -130,8 +132,6 @@ void main() {
     expect(find.text(R.strings.msgRequiredField), findsOneWidget);
   });
 
-
-
   testWidgets('Should present no error if email is valid',
       (WidgetTester tester) async {
     await loadPage(tester);
@@ -141,7 +141,8 @@ void main() {
 
     expect(
         find.descendant(
-            of: find.bySemanticsLabel(R.strings.email), matching: find.byType(Text)),
+            of: find.bySemanticsLabel(R.strings.email),
+            matching: find.byType(Text)),
         findsOneWidget);
   });
 
@@ -158,7 +159,7 @@ void main() {
   //           of: find.bySemanticsLabel('Email'), matching: find.byType(Text)),
   //       findsOneWidget);
   // });
-  
+
   testWidgets('Should present error if password is empty',
       (WidgetTester tester) async {
     await loadPage(tester);
@@ -178,7 +179,8 @@ void main() {
 
     expect(
         find.descendant(
-            of: find.bySemanticsLabel(R.strings.password), matching: find.byType(Text)),
+            of: find.bySemanticsLabel(R.strings.password),
+            matching: find.byType(Text)),
         findsOneWidget);
   });
 
@@ -224,7 +226,12 @@ void main() {
 
     isFormValidController.add(true);
     await tester.pump();
-    await tester.tap(find.byType(RaisedButton));
+    
+    final button = find.byType(RaisedButton);
+    //O botao pode nao esta visivel na tela, entao é fundamental para que o finder o encontre estar visivel:
+    await tester.ensureVisible(button); 
+
+    await tester.tap(button);
     await tester.pump();
 
     verify(presenter.auth()).called(1);
@@ -260,7 +267,7 @@ void main() {
     expect(find.text(R.strings.msgInvalidCredential), findsOneWidget);
   });
 
-   testWidgets('Should present error message if authentication throws',
+  testWidgets('Should present error message if authentication throws',
       (WidgetTester tester) async {
     await loadPage(tester);
 
